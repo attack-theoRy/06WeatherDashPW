@@ -38,9 +38,9 @@ $.ajax({
 
   console.log(response.wind.speed)
 
-  getCurrentConditions(response);
-  getCurrentForecast(response);
-  makeList();
+  //getCurrentConditions(response);
+  //getCurrentForecast(response);
+ // makeList();
 
   })
 
