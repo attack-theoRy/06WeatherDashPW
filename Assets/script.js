@@ -10,6 +10,8 @@ var apiKey = "&appid=afaa8eea1769b4359fd8e07b2efcefbd";
 // declare variable for eventual looong query
 var myQueryURL = ''
 
+var savedCities = ''
+
 
 // event listener function for the search button
 // what happens when you hit search!
@@ -32,19 +34,55 @@ $.ajax({
 
 // show the current weather
 showCurrentWeather(response)
-
+showUVIndex(response)
 
  makeForecast(response)
- makeList();
+ searchHistory();
 
   })
 
 
 })
 
-function makeList() {
+$(".btn-primary").on("click", function() {
+
+  // get the value from the form
+  savedCity= $(".btn-primary").text();
+  
+  // the full query 
+  myQueryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + savedCity + apiKey;
+  
+  // ajax api call
+  $.ajax({
+    url: myQueryURL,
+    method: "GET"
+  })
+  .then(function (response){
+  
+    console.log(response)
+  
+  // show the current weather
+  showCurrentWeather(response)
+  showUVIndex(response)
+  
+   makeForecast(response)
+   searchHistory();
+  
+    })
+  
+  
+  })
+
+function searchHistory() {
   var listItem = $("<li>").addClass("list-group-item").text(citySearched);
+
+  listItem.addClass('btn-default')
+
+  //savedCities.push(citySearched)
+
   $(".list").append(listItem);
+
+  savedCities = JSON.parse(localStorage.getItem('savedCities'))
 }
 
 function showCurrentWeather(response)
@@ -77,19 +115,7 @@ function showCurrentWeather(response)
 
     // get the UV Index
 
-
-    /*$.ajax({
-      url: myQueryURL,
-      method: "GET"
-    })
-    .then(function (response){
-    
-      console.log(response)
-*/
-    
-
     $("#currentCity").append(card)
-
 
 }
 
@@ -122,7 +148,9 @@ function makeForecast(response)
       
       //var tempF = Math.floor(temp);
 
-      var card = $("<div>").addClass("card col-2 bg-primary text-white");
+
+      var card = $("<div>").addClass("card col-2 bg-primary text-white currentCard");
+
       var cardBody = $("<div>").addClass("card-body p-3 ")
       //var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
       var temperature = $("<p>").addClass("card-text forecastTemp").text("Temp: " + tempFahren + " °F");
@@ -137,6 +165,34 @@ function makeForecast(response)
 })
 }
 
-function showUVIndex(){
+function showUVIndex(response){
+
+
+  // used for debugging
+  console.log(response)
+
+  // get the longitude from the API response
+  var longitude = response.coord.lon
+
+  // get the latitude from the API response
+  var latitude = response.coord.lat
+
+  // get UV url query
+  var UVurl = 'http://api.openweathermap.org/data/2.5/uvi?lat=' + latitude + '&lon=' + longitude + apiKey
+
+  $.ajax({
+    url: UVurl,
+    method: "GET"
+  }).then(function (response){
+
+
+    var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+
+    $('currentCard').append(UVindex)
+    $("#currentCity").append(UVindex)
+  })
+
+
+
 
 }
