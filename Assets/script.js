@@ -10,9 +10,11 @@ var apiKey = "&appid=afaa8eea1769b4359fd8e07b2efcefbd";
 // declare variable for eventual looong query
 var myQueryURL = ''
 
-var savedCities = ['']
+var savedCities = ''
 
 var date = new Date();
+
+searchHistory()
 
 
 // event listener function for the search button
@@ -32,7 +34,6 @@ $.ajax({
 })
 .then(function (response){
 
-  console.log(response)
 
 // show the current weather
 showCurrentWeather(response)
@@ -46,10 +47,15 @@ showUVIndex(response)
 
 })
 
-$(".btn-primary").on("click", function() {
+$(".btn-primary").on("click", function(event) {
 
   // get the value from the form
-  savedCity= $(".btn-primary").text();
+
+  var selection = event.target
+
+  savedCity= $(".btn-primary").val();
+
+  console.log(savedCity)
   
   // the full query 
   myQueryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + savedCity + apiKey;
@@ -75,17 +81,42 @@ $(".btn-primary").on("click", function() {
   
   })
 
+  // get saved cities from localStorage and also save the current cities searched for
 function searchHistory() {
+
+  savedCities = JSON.parse(localStorage.getItem('savedCities'))
+
+  
+
+  if(savedCities != null)
+  {
+  for(var i=0; i< savedCities.length; i++)
+  {
+    var listItem = $("<li>").addClass("list-group-item").text(savedCities[i]);
+    listItem.addClass('btn-primary')
+    $(".list").append(listItem);
+
+  }
+}
+
+if(citySearched != '')
+{
   var listItem = $("<li>").addClass("list-group-item").text(citySearched);
 
-  listItem.addClass('btn-default')
+  listItem.addClass('btn-primary')
+  $(".list").append(listItem);
+  savedCities.push(citySearched)
+  localStorage.setItem('savedCities', savedCities)
+}
+
 
   //savedCities.push(citySearched)
 
-  $(".list").append(listItem);
+ 
 
-  savedCities = JSON.parse(localStorage.getItem('savedCities'))
+ //savedCities = JSON.parse(localStorage.getItem('savedCities'))
 }
+
 
 function showCurrentWeather(response)
 {
@@ -97,20 +128,20 @@ function showCurrentWeather(response)
     var tempFahren = (response.main.temp - 273.15) * 1.80 + 32;
 
     // get the date
-  //  var todayDate = Date()
+    //var todayDate = Date()
 
 
     var card = $("<div>").addClass("card");
     var cardBody = $("<div>").addClass("card-body");
     var city = $("<h4>").addClass("card-title").text(response.name);
-    //var cityDate = $("<h4>").addClass("card-title").text(todayDate.getDate());
+    const cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
     var temperature = $("<p>").addClass("card-text current-temp").text("Temperature: " + tempFahren + " °F");
     var humidity = $("<p>").addClass("card-text current-humidity").text("Humidity: " + response.main.humidity + "%");
     var wind = $("<p>").addClass("card-text current-wind").text("Wind Speed: " + response.wind.speed + " MPH");
     var image = $("<img>").attr("src", "https://openweathermap.org/img/w/" + response.weather[0].icon + ".png")
 
     // add to page
-    //city.append(cityDate, image)
+    city.append(cityDate, image)
     cardBody.append(city, temperature, humidity, wind);
     card.append(cardBody);
 
@@ -198,7 +229,7 @@ function showUVIndex(response){
 
     var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
 
-    $('currentCard').append(UVindex)
+   // $('currentCard').append(UVindex)
     $("#currentCity").append(UVindex)
   })
 
