@@ -5,16 +5,17 @@
 var citySearched = $("#searchBox").val();
 
 // set my api Key
-var apiKey = "&appid=afaa8eea1769b4359fd8e07b2efcefbd";
+var apiKey = "&appid=4f673f2121ccfb9c88b2fc0428302cb3";
 
 // declare variable for eventual looong query
 var myQueryURL = ''
 
-var savedCities = ''
+var savedCities = ['']
+
+var firstRun = true
 
 var date = new Date();
 
-searchHistory()
 
 
 // event listener function for the search button
@@ -37,7 +38,7 @@ $.ajax({
 
 // show the current weather
 showCurrentWeather(response)
-showUVIndex(response)
+//showUVIndex(response)
 
  makeForecast(response)
  searchHistory();
@@ -47,13 +48,17 @@ showUVIndex(response)
 
 })
 
-$(".btn-primary").on("click", function(event) {
+// logic for saved searches
+$(".btn-outline-primary").on("click", function(event) {
 
   // get the value from the form
 
   var selection = event.target
 
-  savedCity= $(".btn-primary").val();
+  savedCity = selection.textContent;
+
+  // debug console for saved search
+  console.log("clicked saved search")
 
   console.log(savedCity)
   
@@ -71,42 +76,117 @@ $(".btn-primary").on("click", function(event) {
   
   // show the current weather
   showCurrentWeather(response)
-  showUVIndex(response)
+  //showUVIndex(response)
   
    makeForecast(response)
    searchHistory();
   
     })
   
-  
   })
+
+  //////////////////////////////////////
+
+  // load the saved searches from file and display the last search
+
+  function loadSearch(){
+
+    //var savedCity = 'Oakland'
+    //localStorage.setItem('savedCities', JSON.stringify(savedCity))
+
+
+    // get the savedCities from file
+    savedCities = JSON.parse(localStorage.getItem('savedCities'))
+
+    
+
+    // display the last search as long as there are cities saved
+    if(savedCities !== null)
+    {
+
+      console.log(savedCities)
+
+      citySearched = savedCities[(savedCities.length - 1)]
+      console.log(citySearched)
+      // the full query 
+      myQueryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearched + apiKey;
+
+      // ajax api call
+      $.ajax({
+      url: myQueryURL,
+      method: "GET"
+  })
+.then(function (response){
+
+
+// show the current weather
+showCurrentWeather(response)
+//showUVIndex(response)
+
+ makeForecast(response)
+ searchHistory();
+
+  })
+
+
+    }
+    else{
+      console.log("switching first run here")
+      firstRun = false
+    }
+
+
+
+}
+
+///////////////
+
+// load this function on startup
+loadSearch()
 
   // get saved cities from localStorage and also save the current cities searched for
 function searchHistory() {
 
+  // get the saved City array from local storage
   savedCities = JSON.parse(localStorage.getItem('savedCities'))
 
-  
 
-  if(savedCities != null)
+  // make sure savedCities has something in it
+  if(savedCities !== null)
   {
+
+    console.log("not the first run?")
+
+    console.log(savedCities)
+    
   for(var i=0; i< savedCities.length; i++)
   {
     var listItem = $("<li>").addClass("list-group-item").text(savedCities[i]);
-    listItem.addClass('btn-primary')
+    listItem.addClass('btn-outline-primary')
     $(".list").append(listItem);
+    
 
   }
 }
 
-if(citySearched != '')
+if(citySearched !== '')
 {
   var listItem = $("<li>").addClass("list-group-item").text(citySearched);
 
-  listItem.addClass('btn-primary')
+  listItem.addClass('btn-outline-primary')
   $(".list").append(listItem);
+
+  // if this isn't the first run with saved cities then push onto array, otherwise equal the array for first index
+  if(!firstRun)
+  {
   savedCities.push(citySearched)
   localStorage.setItem('savedCities', savedCities)
+  }
+  else
+  {
+    savedCities[0] = citySearched
+  }
+  
 }
 
 
@@ -192,7 +272,7 @@ function makeForecast(response)
       var temperature = $("<p>").addClass("card-text forecastTemp").text("Temp: " + tempFahren + " °F");
       var humidity = $("<p>").addClass("card-text forecastHumidity").text("Humidity: " + results[i].main.humidity + "%");
 
-      const cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
+      var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
 
       
       cardBody.append(cityDate, cardImage, temperature, humidity);
@@ -224,10 +304,18 @@ function showUVIndex(response){
     method: "GET"
   }).then(function (response){
 
-    if(response.value)
+    if(response.value < 3)
+    {
+      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+      UVindex.setAttribute('')
+    }
+    else if(response.value > 3 && response.value < 5)
+    {
 
+    }
+    else{
 
-    var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+    }
 
    // $('currentCard').append(UVindex)
     $("#currentCity").append(UVindex)
