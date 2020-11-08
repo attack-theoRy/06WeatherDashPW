@@ -10,7 +10,9 @@ var apiKey = "&appid=afaa8eea1769b4359fd8e07b2efcefbd";
 // declare variable for eventual looong query
 var myQueryURL = ''
 
-var savedCities = ''
+var savedCities = ['']
+
+var date = new Date();
 
 
 // event listener function for the search button
@@ -97,8 +99,7 @@ function showCurrentWeather(response)
     // get the date
   //  var todayDate = Date()
 
-   // console.log(todayDate.getFullYear())
-  // 
+
     var card = $("<div>").addClass("card");
     var cardBody = $("<div>").addClass("card-body");
     var city = $("<h4>").addClass("card-title").text(response.name);
@@ -140,26 +141,33 @@ function makeForecast(response)
 
   for (var i = 0; i < results.length; i++) {
 
-    // get the image for the forecast
+
+    if(results[i].dt_txt.indexOf("12:00:00") !== -1){
+    
+      // get the image for the forecast
     var cardImage = $("<img>").attr("src", "https://openweathermap.org/img/w/" + results[i].weather[0].icon + ".png")
   
       // get the temperature and convert to fahrenheit 
-      var tempFahren =  Math.floor((results[i].main.temp - 273.15) * 1.80 + 32);
-      
-      //var tempF = Math.floor(temp);
+      //var tempFahren =  Math.floor((results[i].main.temp - 273.15) * 1.80 + 32);
+
+    var temp = (results[i].main.temp - 273.15) * 1.80 + 32;
+    var tempFahren = Math.round(temp);
 
 
       var card = $("<div>").addClass("card col-2 bg-primary text-white currentCard");
 
       var cardBody = $("<div>").addClass("card-body p-3 ")
-      //var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
+     
       var temperature = $("<p>").addClass("card-text forecastTemp").text("Temp: " + tempFahren + " °F");
       var humidity = $("<p>").addClass("card-text forecastHumidity").text("Humidity: " + results[i].main.humidity + "%");
 
+      const cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
+
       
-      cardBody.append(/*cityDate,*/ cardImage, temperature, humidity);
+      cardBody.append(cityDate, cardImage, temperature, humidity);
       card.append(cardBody);
       $("#forecast").append(card);
+    }
 
   }
 })
@@ -184,6 +192,8 @@ function showUVIndex(response){
     url: UVurl,
     method: "GET"
   }).then(function (response){
+
+    if(response.value)
 
 
     var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
