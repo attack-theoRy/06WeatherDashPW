@@ -104,8 +104,7 @@ $(".list").on("click", function(event) {
   //////////////////////////////////////
 
 
-  // load the saved searches from file and display the last search
-
+  // load the last search
   function loadSearch(){
 
 
@@ -116,8 +115,10 @@ $(".list").on("click", function(event) {
     if(savedCities !== null)
     {
 
+      // debug console
   console.log(savedCities)
 
+  // set the city to search for to the last displayed city
   citySearched = savedCities
   console.log(citySearched)
  
@@ -133,13 +134,15 @@ $(".list").on("click", function(event) {
 
 // show the current weather
 showCurrentWeather(response)
+
+// show the current UV index with color coding
 showUVIndex(response)
+
+// show the 5 day forecast
 makeForecast(response)
 })
     
-}
-
-}
+}}
 
 ///////////////
 
@@ -149,29 +152,21 @@ loadSearch()
   // get saved cities from localStorage and also save the current cities searched for
 function searchHistory() {
 
-  // make sure savedCities has something in it
-  if(savedCities !== null)
-  {
-
-    console.log(savedCities)  
-}
 
 // make sure the text box has something in it
 if(citySearched !== '')
 {
+  // set list item to last city search
   var listItem = $("<li>").addClass("list-group-item").text(citySearched);
 
+  // add it to the search history list and give it a button class to enable clicking 
   listItem.addClass('btn-outline-primary')
   $(".list").append(listItem);
-
-  // if this isn't the first run with saved cities then push onto array, otherwise equal the array for first index
- // deprecated code 
-  
-}
-
-}
+ 
+}}
 
 
+// show the current weather conditions
 function showCurrentWeather(response)
 {
 
@@ -181,14 +176,11 @@ function showCurrentWeather(response)
     // get temperature from response and convert it fahrenheit
     var tempFahren = (response.main.temp - 273.15) * 1.80 + 32;
 
-    // get the date
-    //var todayDate = Date()
-
 
     var card = $("<div>").addClass("card");
     var cardBody = $("<div>").addClass("card-body");
     var city = $("<h4>").addClass("card-title").text(response.name);
-    const cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
+    var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
     var temperature = $("<p>").addClass("card-text current-temp").text("Temperature: " + tempFahren + " °F");
     var humidity = $("<p>").addClass("card-text current-humidity").text("Humidity: " + response.main.humidity + "%");
     var wind = $("<p>").addClass("card-text current-wind").text("Wind Speed: " + response.wind.speed + " MPH");
@@ -198,8 +190,6 @@ function showCurrentWeather(response)
     city.append(cityDate, image)
     cardBody.append(city, temperature, humidity, wind);
     card.append(cardBody);
-
-    // get the UV Index
 
     $("#currentCity").append(card)
 
@@ -220,7 +210,7 @@ function makeForecast(response)
   // debug the list
   console.log(response)
   
-  // 
+  // clear out the previous forecast
   $('#forecast').empty();
 
 
@@ -230,7 +220,7 @@ function makeForecast(response)
 
     if(results[i].dt_txt.indexOf("12:00:00") !== -1){
     
-      // get the image for the forecast
+      // get the image for the forecast from the api
     var cardImage = $("<img>").attr("src", "https://openweathermap.org/img/w/" + results[i].weather[0].icon + ".png")
   
 
@@ -239,14 +229,14 @@ function makeForecast(response)
     var tempFahren = Math.round(temp);
 
 
-    // set card attributes for current conditions
-      var card = $("<div>").addClass("card col-2 bg-primary text-white currentCard");
+    // set card attributes for the 5 day forecast
+      var card = $("<div>").addClass("card col-md-2 ml-4 bg-primary text-white");
 
       var cardBody = $("<div>").addClass("card-body p-3 ")
-     
+      
       // set temperature, humidity and date to current conditions
-      var temperature = $("<p>").addClass("card-text forecastTemp").text("Temp: " + tempFahren + " °F");
-      var humidity = $("<p>").addClass("card-text forecastHumidity").text("Humidity: " + results[i].main.humidity + "%");
+      var temperature = $("<p>").addClass("card-text").text("Temp: " + tempFahren + " °F");
+      var humidity = $("<p>").addClass("card-text ").text("Humidity: " + results[i].main.humidity + "%");
       var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
 
       // unhide the 5 day forecast title
@@ -254,6 +244,9 @@ function makeForecast(response)
 
       // add the conditions to the card
       cardBody.append(cityDate, cardImage, temperature, humidity);
+
+      
+      // add the body to the card shell
       card.append(cardBody);
       
       // add the card to the forecast anchor element
@@ -264,7 +257,7 @@ function makeForecast(response)
 })
 }
 
-// function get the UV index
+// function to get the UV index
 function showUVIndex(response){
 
 
@@ -288,19 +281,22 @@ function showUVIndex(response){
 
 
     // set the different UV colors depending on how severe the conditions are
+    // favorable
     if(response.value < 3)
     {
-      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value + " - favorable");
       UVindex.css('background-color', 'green')
     }
+    // moderate
     else if(response.value > 3 && response.value < 5)
     {
-      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value + ' - moderate');
       UVindex.css('background-color', 'yellow')
     }
+    // severe
     else{
 
-      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value + ' - severe');
       UVindex.css('background-color', 'red')
     }
 
@@ -308,8 +304,5 @@ function showUVIndex(response){
     // add the UV index to the current conditions
     $("#currentCity").append(UVindex)
   })
-
-
-
 
 }
