@@ -2,7 +2,7 @@
 // Variable Declarations
 
 // get the city from input
-var citySearched = $("#searchBox").val();
+var citySearched = '' 
 
 // set my api Key
 var apiKey = "&appid=4f673f2121ccfb9c88b2fc0428302cb3";
@@ -10,12 +10,15 @@ var apiKey = "&appid=4f673f2121ccfb9c88b2fc0428302cb3";
 // declare variable for eventual looong query
 var myQueryURL = ''
 
+// saved cities object array
 var savedCities = ['']
 
-var firstRun = true
+// saved search history array
+var history = ['New York', 'San Francisco', 'Albany', 'Berkeley']
 
+
+// use date variable to get proper date
 var date = new Date();
-
 
 
 // event listener function for the search button
@@ -35,21 +38,25 @@ $.ajax({
 })
 .then(function (response){
 
+ 
+  // save the last city searched for in storage
+  localStorage.setItem('savedCities', citySearched)
+
 
 // show the current weather
 showCurrentWeather(response)
-//showUVIndex(response)
+showUVIndex(response)
 
  makeForecast(response)
  searchHistory();
 
   })
 
-
 })
 
 // logic for saved searches
-$(".btn-outline-primary").on("click", function(event) {
+$(".list").on("click", function(event) {
+  event.preventDefault() 
 
   // get the value from the form
 
@@ -73,13 +80,14 @@ $(".btn-outline-primary").on("click", function(event) {
   .then(function (response){
   
     console.log(response)
+    localStorage.setItem('savedCities', savedCity)
   
   // show the current weather
   showCurrentWeather(response)
-  //showUVIndex(response)
+  showUVIndex(response)
   
    makeForecast(response)
-   searchHistory();
+
   
     })
   
@@ -87,86 +95,75 @@ $(".btn-outline-primary").on("click", function(event) {
 
   //////////////////////////////////////
 
+
   // load the saved searches from file and display the last search
 
   function loadSearch(){
 
-    //var savedCity = 'Oakland'
-    //localStorage.setItem('savedCities', JSON.stringify(savedCity))
-
 
     // get the savedCities from file
-    savedCities = JSON.parse(localStorage.getItem('savedCities'))
-
+    savedCities = localStorage.getItem('savedCities')
     
-
     // display the last search as long as there are cities saved
     if(savedCities !== null)
     {
 
-      console.log(savedCities)
+  //  var listItem = $("<li>").addClass("list-group-item").text(savedCities);
+  //  listItem.addClass('btn-outline-primary')
+  //  $(".list").append(listItem);
 
-      citySearched = savedCities[(savedCities.length - 1)]
-      console.log(citySearched)
-      // the full query 
-      myQueryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearched + apiKey;
+  console.log(savedCities)
 
-      // ajax api call
-      $.ajax({
-      url: myQueryURL,
-      method: "GET"
-  })
+  citySearched = savedCities
+  console.log(citySearched)
+ 
+  // the full query 
+  myQueryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearched + apiKey;
+
+  // ajax api call
+  $.ajax({
+  url: myQueryURL,
+  method: "GET"
+})
 .then(function (response){
-
 
 // show the current weather
 showCurrentWeather(response)
-//showUVIndex(response)
-
- makeForecast(response)
- searchHistory();
-
-  })
-
-
-    }
-    else{
-      console.log("switching first run here")
-      firstRun = false
-    }
-
-
+showUVIndex(response)
+makeForecast(response)
+})
+    
+}
 
 }
 
 ///////////////
 
-// load this function on startup
+// load this function on startup to get the last city searched to display 
 loadSearch()
 
   // get saved cities from localStorage and also save the current cities searched for
 function searchHistory() {
 
   // get the saved City array from local storage
-  savedCities = JSON.parse(localStorage.getItem('savedCities'))
+  //savedCities = JSON.parse(localStorage.getItem('savedCities'))
 
 
   // make sure savedCities has something in it
   if(savedCities !== null)
   {
 
-    console.log("not the first run?")
 
     console.log(savedCities)
     
-  for(var i=0; i< savedCities.length; i++)
-  {
-    var listItem = $("<li>").addClass("list-group-item").text(savedCities[i]);
-    listItem.addClass('btn-outline-primary')
-    $(".list").append(listItem);
+//  for(var i=0; i< savedCities.length; i++)
+//  {
+ //   var listItem = $("<li>").addClass("list-group-item").text(savedCities[i]);
+//    listItem.addClass('btn-outline-primary')
+//    $(".list").append(listItem);
     
 
-  }
+//  }
 }
 
 if(citySearched !== '')
@@ -177,24 +174,13 @@ if(citySearched !== '')
   $(".list").append(listItem);
 
   // if this isn't the first run with saved cities then push onto array, otherwise equal the array for first index
-  if(!firstRun)
-  {
-  savedCities.push(citySearched)
-  localStorage.setItem('savedCities', savedCities)
-  }
-  else
-  {
-    savedCities[0] = citySearched
-  }
+ 
+  //localStorage.setItem('savedCities', savedCities)
+ 
   
 }
 
 
-  //savedCities.push(citySearched)
-
- 
-
- //savedCities = JSON.parse(localStorage.getItem('savedCities'))
 }
 
 
@@ -250,6 +236,7 @@ function makeForecast(response)
   $('#forecast').empty();
 
 
+  // loop for all 5 days
   for (var i = 0; i < results.length; i++) {
 
 
@@ -284,6 +271,7 @@ function makeForecast(response)
 })
 }
 
+// function get the UV index
 function showUVIndex(response){
 
 
@@ -304,20 +292,25 @@ function showUVIndex(response){
     method: "GET"
   }).then(function (response){
 
+
+    // set the different UV colors depending on how severe the conditions are
     if(response.value < 3)
     {
       var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
-      UVindex.setAttribute('')
+      UVindex.css('background-color', 'green')
     }
     else if(response.value > 3 && response.value < 5)
     {
-
+      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+      UVindex.css('background-color', 'yellow')
     }
     else{
 
+      var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value);
+      UVindex.css('background-color', 'red')
     }
 
-   // $('currentCard').append(UVindex)
+    //$('currentCard').append(UVindex)
     $("#currentCity").append(UVindex)
   })
 
