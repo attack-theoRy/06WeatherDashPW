@@ -300,7 +300,6 @@ function showUVIndex(response){
       UVindex.css('background-color', 'red')
     }
 
-
     // add the UV index to the current conditions
     $("#currentCity").append(UVindex)
   })

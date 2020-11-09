@@ -8,10 +8,10 @@ GitHub Repo: https://github.com/attack-theoRy/06WeatherDashPW
 GitHub Pages / App : https://attack-theory.github.io/06WeatherDashPW/
 
 APIs and CSS Frameworks Used: 
--OpenWeatherMap API
+- OpenWeatherMap API
 - jQuery API
--Font Awesome CSS for search function magnifying icon
--BootStrap CSS
+- Font Awesome CSS for search function magnifying icon
+- BootStrap CSS
 
 What this App Does:
 Weather app that allows you to find the current weather conditions by city / country. Has search bar (where user inputs city) that calls openweathermap api to get current temperature, humidity, date, wind speed and UV index. UV index is color coded to denote whether UV is favorable (green), moderate (yellow) or severe (red). Favorable = 0-3, Moderate = 3-5 and Severe = 5+. Here is an example of severe UV index in Chile
