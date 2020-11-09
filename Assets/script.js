@@ -54,6 +54,14 @@ showUVIndex(response)
 
 })
 
+// also handle search input if enter key is pressed
+$('#searchBox').keypress(function (e){
+  if(e.keyCode === 13){
+      e.preventDefault() 
+      $("#searchBtn").click()
+  }
+})
+
 // logic for saved searches
 $(".list").on("click", function(event) {
   event.preventDefault() 
@@ -108,10 +116,6 @@ $(".list").on("click", function(event) {
     if(savedCities !== null)
     {
 
-  //  var listItem = $("<li>").addClass("list-group-item").text(savedCities);
-  //  listItem.addClass('btn-outline-primary')
-  //  $(".list").append(listItem);
-
   console.log(savedCities)
 
   citySearched = savedCities
@@ -145,27 +149,14 @@ loadSearch()
   // get saved cities from localStorage and also save the current cities searched for
 function searchHistory() {
 
-  // get the saved City array from local storage
-  //savedCities = JSON.parse(localStorage.getItem('savedCities'))
-
-
   // make sure savedCities has something in it
   if(savedCities !== null)
   {
 
-
-    console.log(savedCities)
-    
-//  for(var i=0; i< savedCities.length; i++)
-//  {
- //   var listItem = $("<li>").addClass("list-group-item").text(savedCities[i]);
-//    listItem.addClass('btn-outline-primary')
-//    $(".list").append(listItem);
-    
-
-//  }
+    console.log(savedCities)  
 }
 
+// make sure the text box has something in it
 if(citySearched !== '')
 {
   var listItem = $("<li>").addClass("list-group-item").text(citySearched);
@@ -174,12 +165,9 @@ if(citySearched !== '')
   $(".list").append(listItem);
 
   // if this isn't the first run with saved cities then push onto array, otherwise equal the array for first index
- 
-  //localStorage.setItem('savedCities', savedCities)
- 
+ // deprecated code 
   
 }
-
 
 }
 
@@ -245,25 +233,30 @@ function makeForecast(response)
       // get the image for the forecast
     var cardImage = $("<img>").attr("src", "https://openweathermap.org/img/w/" + results[i].weather[0].icon + ".png")
   
-      // get the temperature and convert to fahrenheit 
-      //var tempFahren =  Math.floor((results[i].main.temp - 273.15) * 1.80 + 32);
 
+      // get the temperature in kelvin and convert to fahrenheit
     var temp = (results[i].main.temp - 273.15) * 1.80 + 32;
     var tempFahren = Math.round(temp);
 
 
+    // set card attributes for current conditions
       var card = $("<div>").addClass("card col-2 bg-primary text-white currentCard");
 
       var cardBody = $("<div>").addClass("card-body p-3 ")
      
+      // set temperature, humidity and date to current conditions
       var temperature = $("<p>").addClass("card-text forecastTemp").text("Temp: " + tempFahren + " °F");
       var humidity = $("<p>").addClass("card-text forecastHumidity").text("Humidity: " + results[i].main.humidity + "%");
-
       var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
 
-      
+      // unhide the 5 day forecast title
+      $('#forecastH5').show()
+
+      // add the conditions to the card
       cardBody.append(cityDate, cardImage, temperature, humidity);
       card.append(cardBody);
+      
+      // add the card to the forecast anchor element
       $("#forecast").append(card);
     }
 
@@ -287,6 +280,7 @@ function showUVIndex(response){
   // get UV url query
   var UVurl = 'http://api.openweathermap.org/data/2.5/uvi?lat=' + latitude + '&lon=' + longitude + apiKey
 
+  // ajax call
   $.ajax({
     url: UVurl,
     method: "GET"
@@ -310,7 +304,8 @@ function showUVIndex(response){
       UVindex.css('background-color', 'red')
     }
 
-    //$('currentCard').append(UVindex)
+
+    // add the UV index to the current conditions
     $("#currentCity").append(UVindex)
   })
 
