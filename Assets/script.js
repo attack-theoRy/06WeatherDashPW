@@ -222,7 +222,8 @@ function makeForecast(response)
   for (var i = 0; i < 5; i++) {
 
 
-    var tempDate = moment().format('dddd, MMMM Do YYYY')
+    // get the current day
+    var tempDate = date
     tempDate = moment().add(i, 'days')
      
     
@@ -261,7 +262,7 @@ function makeForecast(response)
 
   }
 
-  date = new Date();
+
 })
 }
 
