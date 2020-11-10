@@ -14,11 +14,12 @@ var myQueryURL = ''
 var savedCities = ['']
 
 // saved search history array
-var history = ['New York', 'San Francisco', 'Albany', 'Berkeley']
+// used just for testing
+//var history = ['New York', 'San Francisco', 'Albany', 'Berkeley']
 
 
 // use date variable to get proper date
-var date = new Date();
+var date = moment().format('dddd, MMMM Do YYYY')
 
 
 // event listener function for the search button
@@ -180,7 +181,7 @@ function showCurrentWeather(response)
     var card = $("<div>").addClass("card");
     var cardBody = $("<div>").addClass("card-body");
     var city = $("<h4>").addClass("card-title").text(response.name);
-    var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
+    var cityDate = $("<h4>").addClass("card-title").text(date);
     var temperature = $("<p>").addClass("card-text current-temp").text("Temperature: " + tempFahren + " °F");
     var humidity = $("<p>").addClass("card-text current-humidity").text("Humidity: " + response.main.humidity + "%");
     var wind = $("<p>").addClass("card-text current-wind").text("Wind Speed: " + response.wind.speed + " MPH");
@@ -213,12 +214,17 @@ function makeForecast(response)
   // clear out the previous forecast
   $('#forecast').empty();
 
+  // debug console
+  console.log(date)
+
 
   // loop for all 5 days
-  for (var i = 0; i < results.length; i++) {
+  for (var i = 0; i < 5; i++) {
 
 
-    if(results[i].dt_txt.indexOf("12:00:00") !== -1){
+    var tempDate = moment().format('dddd, MMMM Do YYYY')
+    tempDate = moment().add(i, 'days')
+     
     
       // get the image for the forecast from the api
     var cardImage = $("<img>").attr("src", "https://openweathermap.org/img/w/" + results[i].weather[0].icon + ".png")
@@ -237,7 +243,7 @@ function makeForecast(response)
       // set temperature, humidity and date to current conditions
       var temperature = $("<p>").addClass("card-text").text("Temp: " + tempFahren + " °F");
       var humidity = $("<p>").addClass("card-text ").text("Humidity: " + results[i].main.humidity + "%");
-      var cityDate = $("<h4>").addClass("card-title").text(date.toLocaleDateString('en-US'));
+      var cityDate = $("<h4>").addClass("card-title").text(tempDate);
 
       // unhide the 5 day forecast title
       $('#forecastH5').show()
@@ -251,9 +257,11 @@ function makeForecast(response)
       
       // add the card to the forecast anchor element
       $("#forecast").append(card);
-    }
+    //}
 
   }
+
+  date = new Date();
 })
 }
 
