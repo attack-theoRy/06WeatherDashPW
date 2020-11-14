@@ -20,7 +20,7 @@ Search can also be done by pressing "enter" as well, not just clicking.
 
 <img src='Assets\SampleScreen1.png' alt='Chile Weather... get it?'>
 
- The app also gives a 5 day forecast for the city with basic weather conditions including date, temperature, humidity and a small image to denote whether it will be sunny, rainy, foggy etc. and then adds the city to a search history that is displayed beneath the search bar. Searching for multiple cities will give you a clickable search history list you can use to retrieve those cities weather conditions again:
+ The app also gives a 5 day forecast for the city with basic weather conditions including date (extraneous time has been removed since this screenshot), temperature, humidity and a small image to denote whether it will be sunny, rainy, foggy etc. and then adds the city to a search history that is displayed beneath the search bar. Searching for multiple cities will give you a clickable search history list you can use to retrieve those cities weather conditions again:
 
  <img src='Assets\SampleScreen3.png'  alt='I guess this means the sun looks like a dirt stain right about now?'>  
  

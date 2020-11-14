@@ -244,7 +244,9 @@ function makeForecast(response)
       // set temperature, humidity and date to current conditions
       var temperature = $("<p>").addClass("card-text").text("Temp: " + tempFahren + " °F");
       var humidity = $("<p>").addClass("card-text ").text("Humidity: " + results[i].main.humidity + "%");
-      var cityDate = $("<h4>").addClass("card-title").text(tempDate);
+      newDate = tempDate.format('dddd, MMMM Do YYYY')
+
+      var cityDate = $("<h4>").addClass("card-title").text(newDate);
 
       // unhide the 5 day forecast title
       $('#forecastH5').show()
