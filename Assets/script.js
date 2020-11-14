@@ -297,18 +297,22 @@ function showUVIndex(response){
     {
       var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value + " - favorable");
       UVindex.css('background-color', 'green')
+      UVindex.innerWidth('200px')
     }
     // moderate
     else if(response.value > 3 && response.value < 5)
     {
       var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value + ' - moderate');
       UVindex.css('background-color', 'yellow')
+      UVindex.innerWidth('200px')
     }
     // severe
     else{
 
       var UVindex = $("<p>").addClass("card-text current-UV").text("UV Index: " + response.value + ' - severe');
       UVindex.css('background-color', 'red')
+      UVindex.innerWidth('200px')
+      
     }
 
     // add the UV index to the current conditions
