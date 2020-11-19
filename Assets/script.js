@@ -282,7 +282,7 @@ function showUVIndex(response){
   var latitude = response.coord.lat
 
   // get UV url query
-  var UVurl = 'https://api.openweathermap.org/data/2.5/uvi?lat=' + latitude + '&lon=' + longitude + apiKey
+  var UVurl = 'https://api.openweathermap.org/data/2.5/uvi?&lat=' + latitude + '&lon=' + longitude + apiKey
 
   // ajax call
   $.ajax({
