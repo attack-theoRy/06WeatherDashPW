@@ -1,6 +1,7 @@
 11/7/2020
 Pirooz Wallace
 Contact Info: PiroozWallace@outlook.com
+LinkedIn: www.linkedin.com/in/piroozwallace
 
 06 Weather Dashboard
 
@@ -33,7 +34,7 @@ Search can also be done by pressing "enter" as well, not just clicking.
    
    
   MIT License
-Copyright (c) 2020 Pirooz Wallace (https://attack-theory.github.io/Portfolio/cards/index.html) Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Copyright (c) 2020 Pirooz Wallace (https://attack-theory.github.io/Portfolio/index.html) Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
